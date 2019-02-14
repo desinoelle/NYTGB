@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import Container from "../components/Container";
-import SearchForm from "../components/SearchForm";
-import SearchResults from "../components/SearchResults";
+import Header from "../components/Header";
+import SearchArea from "../components/SearchArea";
+import Book from "../components/Book";
 import API from "../utils/API";
 
 class Search extends Component {
@@ -11,10 +11,6 @@ class Search extends Component {
         books: [],
         search: ""
       };
-  }
-
-  componentDidMount() {
-    this.searchBooks();
   }
 
   searchBooks() {
@@ -34,25 +30,49 @@ class Search extends Component {
       });
   };
 
-  handleFormSubmit = event => {
+  handleSearchSubmit = event => {
     event.preventDefault();
     this.searchBooks(this.state.search);
   };
 
+  saveBook = event => {
+    event.preventDefault();
+     const newTitle = event.target.title;
+     const newAuthors = event.target.authors;
+     const newSynopsis = event.target.synopsis;
+     const newImgsrc = event.target.imgsrc;
+
+     API.saveBook({
+      title: newTitle,
+      authors: newAuthors,
+      synopsis: newSynopsis,
+      img: newImgsrc
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+  }
+
   render() {
+
     return (
-      <Container>
-        <div className="jumbotron text-center">
-          <h1>(React) Google Books Search</h1>
-          <h3>Search for and Save Books of Interest</h3>
-        </div>
-        <SearchForm
+      <div className="container">
+        <Header />
+        <SearchArea 
           value={this.state.search}
           handleInputChange={this.handleInputChange}
-          handleFormSubmit={this.handleFormSubmit}
+          handleSearchSubmit={this.handleSearchSubmit}
         />
-        <SearchResults books={this.state.books} />
-      </Container>
+        {this.state.books.map(book => (
+          <Book key={book.id}
+                title={book.volumeInfo.title}
+                authors={book.volumeInfo.authors}
+                synopsis={book.volumeInfo.description}
+                imgsrc={book.volumeInfo.imageLinks.smallThumbnail}
+                saveBook={this.saveBook}
+          />
+        ))}
+        
+      </div>
     );
   }
 }

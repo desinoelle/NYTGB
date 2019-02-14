@@ -1,67 +1,51 @@
 import React, {Component} from "react";
-import Container from "../components/Container";
+import Header from "../components/Header";
+import SavedBook from "../components/SavedBook";
+import DeleteBtn from "../components/DeleteBtn";
 import API from "../utils/API";
 
 class Saved extends Component {
-  // Setting our component's initial state
-  state = {
-    books: [],
-    title: "",
-    author: "",
-    synopsis: ""
-  };
+  constructor(props) {
+    super(props);
+      this.state = {
+        books: []
+      };
+  }
 
   componentDidMount() {
     this.loadBooks();
   }
 
-  // Loads all books
-  loadBooks = () => {
+  loadBooks() {
     API.getBooks()
-      .then(res =>
-        this.setState({ books: res.data, title: "", author: "", synopsis: "" })
-      )
+      .then(res => this.setState({ books: res.data }))
       .catch(err => console.log(err));
-  };
+  }
 
-  // Deletes a book
-  deleteBook = id => {
-    API.deleteBook(id)
+  deleteBook = key => {
+    API.deleteBook(key)
       .then(res => this.loadBooks())
       .catch(err => console.log(err));
   };
 
   render() {
-     return (
-      <Container>
-        <div className="jumbotron text-center">
-          <h1>(React) Google Books Search</h1>
-          <h3>Search for and Save Books of Interest</h3>
-        </div>
-        <div className="row">
-          <div className="col">
-            <h1>Saved Books</h1>
-            {this.state.books.length ? (
-              <ul>
-                {this.state.books.map(book => {
-                  return (
-                    <li key={book._id}>
-                      <a href={"/books/" + book._id}>
-                        <strong>
-                          {book.title} by {book.author}
-                        </strong>
-                      </a>
-                      <button onClick={() => this.deleteBook(book._id)}>Delete Book</button>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <h3>No Results to Display</h3>
-            )}
+    return (
+      <div className="container">
+        <Header />
+        {this.state.books.map(book => (
+          <div key={book._id} className="container border border-dark p-3 m-3">
+          <SavedBook
+              title={book.title}
+              authors={book.authors}
+              synopsis={book.synopsis}
+              imgsrc={book.img}
+          />
+          <DeleteBtn onClick={() => this.deleteBook(book._id)} />
           </div>
-        </div>
-      </Container>
+
+          
+        ))}
+      </div>
     );
   }
 }

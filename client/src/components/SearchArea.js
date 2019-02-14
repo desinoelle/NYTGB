@@ -1,6 +1,6 @@
 import React from "react";
 
-function SearchForm(props) {
+function SearchArea(props) {
   return (
     <form>
       <div className="form-group">
@@ -14,7 +14,7 @@ function SearchForm(props) {
           id="search"
         />
         <br />
-        <button onClick={props.handleFormSubmit} className="btn btn-danger">
+        <button onClick={props.handleSearchSubmit} className="btn btn-danger">
           Search
         </button>
       </div>
@@ -22,4 +22,4 @@ function SearchForm(props) {
   );
 }
 
-export default SearchForm;
+export default SearchArea;
