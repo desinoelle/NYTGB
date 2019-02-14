@@ -42,8 +42,6 @@ class Saved extends Component {
           />
           <DeleteBtn onClick={() => this.deleteBook(book._id)} />
           </div>
-
-          
         ))}
       </div>
     );
